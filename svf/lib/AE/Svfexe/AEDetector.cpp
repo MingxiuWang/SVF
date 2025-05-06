@@ -556,15 +556,14 @@ void NullptrDerefDetector::handleStubFunctions(const CallICFGNode* callNode){
          // opt may directly dereference a null pointer and call UNSAFE_LOAD(null)
          bool isSafe = canSafelyDerefPtr(as, arg0Val) && arg0Val->getId() != 0;
          if (!isSafe) {
-            std::cout << "detect null pointer deference success: " << callNode->toString() << std::endl;
-            return;
-         }
-         else
-         {
-            std::string err_msg = "this UNSAFE_LOAD should be a null pointer dereference but not detected. Pos: ";
-            err_msg += callNode->getSourceLoc();
-            std::cerr << err_msg << std::endl;
-            assert(false);
+             std::cout << "Null pointer dereference correctly detected at UNSAFE_LOAD: "
+                       << callNode->toString() << std::endl;
+             return;
+         } else {
+             std::string err_msg = "Expected null pointer dereference at UNSAFE_LOAD site, but none was detected. Position: ";
+             err_msg += callNode->getSourceLoc();
+             std::cerr << err_msg << std::endl;
+             assert(false);
          }
      }
      else if (funcName == "SAFE_LOAD")
@@ -577,12 +576,12 @@ void NullptrDerefDetector::handleStubFunctions(const CallICFGNode* callNode){
          // opt may directly dereference a null pointer and call UNSAFE_LOAD(null)ols
          bool isSafe = canSafelyDerefPtr(as, arg0Val) && arg0Val->getId() != 0;
          if (isSafe) {
-             std::cout << "safe load pointer success: " << callNode->toString() << std::endl;
+             std::cout << "Successfully verified that the load address is safe: " << callNode->toString() << std::endl;
              return;
          }
          else
          {
-             std::string err_msg = "this SAFE_LOAD should be a safe but a null pointer dereference detected. Pos: ";
+             std::string err_msg = "SAFE_LOAD expected a valid pointer, but null dereference detected. Position: ";
              err_msg += callNode->getSourceLoc();
              std::cerr << err_msg << std::endl;
              assert(false);

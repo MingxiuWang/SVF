@@ -348,7 +348,8 @@ void AbsExtAPI::initExtFunMap()
          const u32_t freePtr = callNode->getArgument(0)->getId();
          for (auto addr: as[freePtr].getAddrs()) {
              if (AbstractState::isInvalidMem(addr)) {
-                 // double free here.
+                 // Detected a double free — the address has already been freed.
+                 // No action is taken at this point.
              } else
              {
                  as.addToFreedAddrs(addr);
